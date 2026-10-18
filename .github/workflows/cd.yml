@@ -1,6 +1,7 @@
 name: Environment image build
 
 on:
+  workflow_dispatch:
   push:
     branches: [staging, main]
 
@@ -66,3 +67,4 @@ jobs:
         with:
           name: ticket-triage-production-image
           path: ticket-triage-production.tar
+

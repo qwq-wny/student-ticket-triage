@@ -1,6 +1,6 @@
 # 客服工单优先级分类系统
 
-这是一个简单的机器学习项目。API 会读取一条客服工单，并预测它的优先级：`urgent`、`high`、`normal` 或 `low`。
+这是一个简单的机器学习项目。API 会读取一条客服工单，并预测它的优先级："urgent"、"high"、"normal" 或 "low"。
 
 模型使用 scikit-learn 的逻辑回归，训练特征包括：
 
@@ -43,8 +43,8 @@ pytest
 
 项目使用 DVC 管理两个小数据集版本：
 
-- `data/tickets_v1.csv.dvc`：150 条数据，类别不均衡，包含少量噪声标签
-- `data/tickets_v2.csv.dvc`：240 条数据，类别均衡，并做了清洗和增强
+- "data/tickets_v1.csv.dvc"：150 条数据，类别不均衡，包含少量噪声标签
+- "data/tickets_v2.csv.dvc"：240 条数据，类别均衡，并做了清洗和增强
 
 原始 CSV 文件不会提交到 Git。如果已经配置 Azure DVC 存储，可以执行：
 
@@ -67,7 +67,7 @@ python -m ml.train --config ml/configs/baseline.json
 python -m ml.train --config ml/configs/improved.json
 ```
 
-MLflow 运行记录会写入 `ml/mlruns`。两次实验的指标说明见 `ml/README_experiments.md`。
+MLflow 运行记录会写入 "ml/mlruns"。两次实验的指标说明见 "ml/README_experiments.md"。
 
 ## Git 和 CI/CD 流程
 
@@ -79,11 +79,11 @@ feature/* -> dev -> staging -> main
 
 GitHub Actions 会执行：
 
-- 向 `dev`、`staging` 或 `main` 提 PR：格式检查、Ruff、测试、Docker 镜像构建
-- 推送到 `staging`：使用 staging 环境的 secrets 生成 `.env`，并构建 staging 镜像
-- 推送到 `main`：使用 production 环境的 secrets 生成 `.env`，并构建 production 镜像
+- 向"dev"、"staging" 或 "main" 提 PR：格式检查、Ruff、测试、Docker 镜像构建
+- 推送到 "staging"：使用 staging 环境的 secrets 生成 ".env"，并构建 staging 镜像
+- 推送到 "main"：使用 production 环境的 secrets 生成 ".env"，并构建 production 镜像
 
-这个项目不做真正的外部部署，只构建不同环境的镜像，符合课程作业要求。
+这个项目不做真正的外部部署，只构建不同环境的镜像。
 
 ## Docker 说明
 

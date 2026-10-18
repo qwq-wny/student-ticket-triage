@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local MLOps output
+mlruns/
+ml/mlruns/
+mlflow.db
+ml/artifacts/*.log
+
+# DVC cache and local Azure settings
+.dvc/cache/
+.dvc/tmp/
+.dvc/config.local
+
+# Build files
+node_modules/
+dist/
+build/
+*.egg-info/
+coverage.xml
+htmlcov/
+
+# Local assignment files and helper scripts
+project-instructions.pdf
+project-instructions.txt
+extract-pdf-streams.js
+extracted-streams.txt
+extract-pdf-text.cjs
+package-lock.json
+
+# OS/editor
+.DS_Store
+Thumbs.db

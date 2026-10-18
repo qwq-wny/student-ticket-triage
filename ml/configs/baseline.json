@@ -1,0 +1,12 @@
+{
+  "experiment_name": "ticket-triage-baseline",
+  "dataset_path": "data/tickets_v1.csv",
+  "dataset_version": "v1",
+  "test_size": 0.25,
+  "random_state": 42,
+  "model_params": {
+    "C": 1.0,
+    "max_iter": 500,
+    "class_weight": null
+  }
+}

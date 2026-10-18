@@ -1,0 +1,5 @@
+actual,urgent,high,normal,low
+urgent,15,0,0,0
+high,0,15,0,0
+normal,0,0,15,0
+low,0,0,0,15

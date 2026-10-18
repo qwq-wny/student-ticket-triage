@@ -1,0 +1,68 @@
+name: Environment image build
+
+on:
+  push:
+    branches: [staging, main]
+
+jobs:
+  staging-image:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create staging .env
+        env:
+          STAGING_SECRET: ${{ secrets.STAGING_SECRET }}
+        run: |
+          echo "APP_ENV=staging" >> .env
+          echo "MODEL_PATH=/app/ml/artifacts/v2_logistic_regression.joblib" >> .env
+          echo "APP_SECRET=$STAGING_SECRET" >> .env
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ticket-triage:staging
+
+      - run: docker save ticket-triage:staging -o ticket-triage-staging.tar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ticket-triage-staging-image
+          path: ticket-triage-staging.tar
+
+  production-image:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create production .env
+        env:
+          PRODUCTION_SECRET: ${{ secrets.PRODUCTION_SECRET }}
+        run: |
+          echo "APP_ENV=production" >> .env
+          echo "MODEL_PATH=/app/ml/artifacts/v2_logistic_regression.joblib" >> .env
+          echo "APP_SECRET=$PRODUCTION_SECRET" >> .env
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ticket-triage:production
+
+      - run: docker save ticket-triage:production -o ticket-triage-production.tar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ticket-triage-production-image
+          path: ticket-triage-production.tar

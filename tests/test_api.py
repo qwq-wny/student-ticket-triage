@@ -79,12 +79,15 @@ def test_saved_model_can_predict(tmp_path):
     assert result["probabilities"]
 
 
-def test_docs_page_is_chinese_and_has_instructions():
+def test_docs_page_is_chinese_and_has_instructions_and_examples():
     response = client.get("/docs")
     assert response.status_code == 200
     assert "接口使用说明" in response.text
     assert "试一试" in response.text
     assert "customer_tier" in response.text
+    assert "常用测试示例" in response.text
+    assert "预期返回：urgent" in response.text
+    assert "复制示例" in response.text
 
 
 def test_openapi_descriptions_are_chinese():

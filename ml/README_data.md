@@ -8,7 +8,7 @@ Columns: `ticket_id`, `text`, `customer_tier`, `monthly_revenue`, and `priority`
 
 - 150 rows
 - DVC hash: `9c49d6adf6e96819fb5626bcb6a261ce`
-- Commit: `bffc61a3d544a5a003d60b33fdb706f2e9bea3da`
+- Commit: `90cca78b0a2deff4f7229814e2e8c2b87a1f169c`
 - Class counts: about 30 urgent, 40 high, 55 normal, 25 low
 - It includes some noisy labels on purpose.
 
@@ -16,7 +16,7 @@ Columns: `ticket_id`, `text`, `customer_tier`, `monthly_revenue`, and `priority`
 
 - 240 rows
 - DVC hash: `a1640c8c6041889f71eb384b8585853f`
-- Commit: `dc01217f059b08a6dc2242e57b72eb8c51e5442a`
+- Commit: `90cca78b0a2deff4f7229814e2e8c2b87a1f169c`
 - Every class has 60 rows
 - Noisy labels were corrected
 - More text variations were added
@@ -29,3 +29,4 @@ dvc pull
 python ml/scripts/build_dataset.py v1
 python ml/scripts/build_dataset.py v2
 ```
+

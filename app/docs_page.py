@@ -17,6 +17,14 @@ SWAGGER_HTML = """<!DOCTYPE html>
     .guide ol { margin: 0; padding-left: 22px; line-height: 1.9; }
     .guide code { padding: 2px 6px; border-radius: 4px; background: #edf2f7; color: #b42318; font-family: Consolas, monospace; }
     .tips { margin-top: 14px; padding: 12px 16px; border-left: 4px solid #1677ff; border-radius: 6px; background: #f0f7ff; color: #31465d; line-height: 1.8; }
+    .example-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 18px; }
+    .example-card { padding: 14px 16px; border: 1px solid #dbe4ec; border-radius: 10px; background: #fbfdff; }
+    .example-card h3 { margin: 0 0 6px; font-size: 16px; }
+    .example-card .expected { display: inline-block; margin-bottom: 10px; padding: 3px 8px; border-radius: 999px; background: #e6f4ff; color: #1677ff; font-size: 12px; }
+    .example-card pre { margin: 0 0 12px; padding: 10px; overflow-x: auto; border-radius: 6px; background: #f0f3f6; color: #243b53; font-size: 12px; line-height: 1.6; }
+    .example-copy { padding: 7px 12px; border: 1px solid #1677ff; border-radius: 6px; background: #1677ff; color: #ffffff; font-size: 13px; cursor: pointer; }
+    .example-copy:hover { background: #0958d9; }
+    .copy-status { margin-left: 8px; color: #389e0d; font-size: 12px; }
     #swagger-ui { max-width: 1160px; margin: 0 auto 40px; padding: 0 20px; }
     #swagger-ui .topbar { display: none; }
     #swagger-ui .opblock-summary-path { font-weight: 700; }
@@ -37,10 +45,76 @@ SWAGGER_HTML = """<!DOCTYPE html>
     <div class="tips">
       提示：<code>customer_tier</code> 只能填 <code>free</code>、<code>standard</code> 或 <code>premium</code>。优先级返回值含义：<code>urgent</code> 紧急、<code>high</code> 高、<code>normal</code> 普通、<code>low</code> 低。
     </div>
+
+    <h2>常用测试示例</h2>
+    <p>点击“复制示例”后，展开 <code>POST /triage</code>，点击“试一试”，把内容粘贴到请求体中，再点击“执行”。</p>
+    <div class="example-grid">
+      <article class="example-card">
+        <h3>1. 紧急工单</h3>
+        <span class="expected">预期返回：urgent</span>
+        <pre>{
+  "text": "Production checkout is down for every customer",
+  "customer_tier": "premium",
+  "monthly_revenue": 80000
+}</pre>
+        <button class="example-copy" type="button" data-example="urgent">复制示例</button>
+        <span class="copy-status" data-status-for="urgent"></span>
+      </article>
+      <article class="example-card">
+        <h3>2. 高优先级工单</h3>
+        <span class="expected">预期返回：high</span>
+        <pre>{
+  "text": "API integration returns errors intermittently",
+  "customer_tier": "standard",
+  "monthly_revenue": 20000
+}</pre>
+        <button class="example-copy" type="button" data-example="high">复制示例</button>
+        <span class="copy-status" data-status-for="high"></span>
+      </article>
+      <article class="example-card">
+        <h3>3. 普通问题</h3>
+        <span class="expected">预期返回：normal</span>
+        <pre>{
+  "text": "How do I reset my password",
+  "customer_tier": "free",
+  "monthly_revenue": 0
+}</pre>
+        <button class="example-copy" type="button" data-example="normal">复制示例</button>
+        <span class="copy-status" data-status-for="normal"></span>
+      </article>
+      <article class="example-card">
+        <h3>4. 低优先级建议</h3>
+        <span class="expected">预期返回：low</span>
+        <pre>{
+  "text": "Feature request: add dark mode",
+  "customer_tier": "standard",
+  "monthly_revenue": 1000
+}</pre>
+        <button class="example-copy" type="button" data-example="low">复制示例</button>
+        <span class="copy-status" data-status-for="low"></span>
+      </article>
+    </div>
   </section>
   <div id="swagger-ui"></div>
   <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
   <script>
+    const examples = {
+      urgent: `{\n  "text": "Production checkout is down for every customer",\n  "customer_tier": "premium",\n  "monthly_revenue": 80000\n}`,
+      high: `{\n  "text": "API integration returns errors intermittently",\n  "customer_tier": "standard",\n  "monthly_revenue": 20000\n}`,
+      normal: `{\n  "text": "How do I reset my password",\n  "customer_tier": "free",\n  "monthly_revenue": 0\n}`,
+      low: `{\n  "text": "Feature request: add dark mode",\n  "customer_tier": "standard",\n  "monthly_revenue": 1000\n}`
+    };
+
+    document.querySelectorAll(".example-copy").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const key = button.dataset.example;
+        await navigator.clipboard.writeText(examples[key]);
+        const status = document.querySelector(`[data-status-for="${key}"]`);
+        status.textContent = "已复制，请粘贴到请求体";
+        setTimeout(() => { status.textContent = ""; }, 2500);
+      });
+    });
+
     window.onload = () => {
       window.ui = SwaggerUIBundle({
         url: "/openapi.json",

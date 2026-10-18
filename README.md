@@ -1,10 +1,16 @@
-﻿# Student Support-Ticket Triage App
+# 学生作业：客服工单优先级分类系统
 
-This is a small machine-learning project. The API reads a support ticket and predicts one priority: `urgent`, `high`, `normal`, or `low`.
+这是一个简单的机器学习项目。API 会读取一条客服工单，并预测它的优先级：`urgent`、`high`、`normal` 或 `low`。
 
-The model is a scikit-learn logistic regression trained on text, customer tier, and monthly revenue. The data is synthetic, so there is no private customer information.
+模型使用 scikit-learn 的逻辑回归，训练特征包括：
 
-## Run it
+- 工单文本
+- 客户等级
+- 每月收入
+
+数据是合成数据，不包含任何真实客户隐私信息。
+
+## 本地运行
 
 ```bash
 python -m venv .venv
@@ -13,9 +19,11 @@ pip install -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
-Then open <http://127.0.0.1:8000/docs>.
+启动后打开：
 
-Example request:
+<http://127.0.0.1:8000/docs>
+
+示例请求：
 
 ```bash
 curl -X POST http://127.0.0.1:8000/triage \
@@ -23,7 +31,7 @@ curl -X POST http://127.0.0.1:8000/triage \
   -d "{\"text\":\"production is down\",\"customer_tier\":\"premium\",\"monthly_revenue\":1000}"
 ```
 
-## Tests
+## 测试和代码检查
 
 ```bash
 ruff format --check .
@@ -31,27 +39,27 @@ ruff check .
 pytest
 ```
 
-## Data and training
+## 数据和训练
 
-There are two small DVC versions:
+项目使用 DVC 管理两个小数据集版本：
 
-- `data/tickets_v1.csv.dvc`: 150 rows, imbalanced, some noisy labels
-- `data/tickets_v2.csv.dvc`: 240 rows, balanced and cleaned
+- `data/tickets_v1.csv.dvc`：150 条数据，类别不均衡，包含少量噪声标签
+- `data/tickets_v2.csv.dvc`：240 条数据，类别均衡，并做了清洗和增强
 
-The raw CSV files are not stored in Git. If you have Azure DVC storage configured, run:
+原始 CSV 文件不会提交到 Git。如果已经配置 Azure DVC 存储，可以执行：
 
 ```bash
 dvc pull
 ```
 
-You can also recreate the toy data:
+也可以重新生成本地测试数据：
 
 ```bash
 python ml/scripts/build_dataset.py v1
 python ml/scripts/build_dataset.py v2
 ```
 
-Train the two MLflow experiments:
+训练两个 MLflow 实验：
 
 ```bash
 pip install -r requirements-ml.txt
@@ -59,32 +67,33 @@ python -m ml.train --config ml/configs/baseline.json
 python -m ml.train --config ml/configs/improved.json
 ```
 
-Run history is written to `ml/mlruns`. See `ml/README_experiments.md` for the two runs and metrics.
+MLflow 运行记录会写入 `ml/mlruns`。两次实验的指标说明见 `ml/README_experiments.md`。
 
-## Git and CI/CD
+## Git 和 CI/CD 流程
 
-Branch path:
+分支路径：
 
 ```text
 feature/* -> dev -> staging -> main
 ```
 
-GitHub Actions:
+GitHub Actions 会执行：
 
-- PR to `dev`, `staging`, or `main`: format check, Ruff, tests, Docker build
-- Push to `staging`: create a staging `.env` from secrets and build a staging image
-- Push to `main`: create a production `.env` from secrets and build a production image
+- 向 `dev`、`staging` 或 `main` 提 PR：格式检查、Ruff、测试、Docker 镜像构建
+- 推送到 `staging`：使用 staging 环境的 secrets 生成 `.env`，并构建 staging 镜像
+- 推送到 `main`：使用 production 环境的 secrets 生成 `.env`，并构建 production 镜像
 
-The project does not deploy anywhere. It only builds environment images, as required by the assignment.
+这个项目不做真正的外部部署，只构建不同环境的镜像，符合课程作业要求。
 
-## Docker
+## Docker 说明
 
-Docker is not run on this computer. GitHub Actions builds the image in the cloud:
+本机不运行 Docker Desktop。Docker 镜像由 GitHub Actions 在云端构建和验证。
+
+如果你自己的电脑上有 Docker，也可以手动构建：
 
 ```bash
 docker build -t ticket-triage .
 docker run --rm -p 8000:8000 ticket-triage
 ```
 
-CI status: checked automatically by GitHub Actions.
-
+CI 状态：由 GitHub Actions 自动检查。

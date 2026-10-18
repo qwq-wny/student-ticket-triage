@@ -77,3 +77,18 @@ def test_saved_model_can_predict(tmp_path):
     )
     assert result["priority"] in ("urgent", "normal")
     assert result["probabilities"]
+
+
+def test_docs_page_is_chinese_and_has_instructions():
+    response = client.get("/docs")
+    assert response.status_code == 200
+    assert "接口使用说明" in response.text
+    assert "试一试" in response.text
+    assert "customer_tier" in response.text
+
+
+def test_openapi_descriptions_are_chinese():
+    response = client.get("/openapi.json")
+    assert response.status_code == 200
+    assert response.json()["info"]["title"] == "客服工单优先级分类 API"
+    assert response.json()["paths"]["/triage"]["post"]["summary"] == "预测工单优先级"

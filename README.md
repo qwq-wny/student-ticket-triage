@@ -85,3 +85,6 @@ Docker is not run on this computer. GitHub Actions builds the image in the cloud
 docker build -t ticket-triage .
 docker run --rm -p 8000:8000 ticket-triage
 ```
+
+CI status: checked automatically by GitHub Actions.
+
